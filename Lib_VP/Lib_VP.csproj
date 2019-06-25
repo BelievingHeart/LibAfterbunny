@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{0240F448-BB5A-4C53-92CD-B4BFB3D9C03B}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>Lib_VP</RootNamespace>
+        <AssemblyName>Lib_VP</AssemblyName>
+        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Cognex.VisionPro, Version=59.2.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
+            <HintPath>C:\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.dll</HintPath>
+        </Reference>
+        <Reference Include="Cognex.VisionPro.PMAlign, Version=59.2.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
+            <HintPath>C:\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.PMAlign.dll</HintPath>
+        </Reference>
+        <Reference Include="Cognex.VisionPro.ToolGroup, Version=59.2.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
+            <HintPath>C:\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.ToolGroup.dll</HintPath>
+        </Reference>
+        <Reference Include="System"/>
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Data"/>
+        <Reference Include="System.Xml"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="BlockRunner.cs"/>
+        <Compile Include="Properties\AssemblyInfo.cs"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Lib_Enums\Lib_Enums.csproj">
+            <Project>{6b77f1e6-9c0d-4008-9b5d-09fb4a0b0388}</Project>
+            <Name>Lib_Enums</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\Lib_Logger\Lib_Logger.csproj">
+            <Project>{8249a032-7250-44e6-b6cf-fa3e6a0be805}</Project>
+            <Name>Lib_Logger</Name>
+        </ProjectReference>
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+             Other similar extension points exist, see Microsoft.Common.targets.
+        <Target Name="BeforeBuild">
+        </Target>
+        <Target Name="AfterBuild">
+        </Target>
+        -->
+</Project>
