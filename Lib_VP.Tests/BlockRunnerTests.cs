@@ -10,12 +10,12 @@ namespace Lib_VP.Tests
     {
         [TestCase(CogToolResultConstants.Accept, RunResult.OK)]
         [TestCase(CogToolResultConstants.Reject, RunResult.NG)]
-        [TestCase(CogToolResultConstants.Error, RunResult.NG)]
-        public void RunToolBlock_2PossibleResults(CogToolResultConstants blockResult, RunResult expectedRunResult)
+        [TestCase(CogToolResultConstants.Error, RunResult.Error)]
+        public void RunToolBlock_3PossibleResults(CogToolResultConstants blockResult, RunResult expectedRunResult)
         {
             var blockMock = BlockRunnerMockFactory.CreateCogToolMock(blockResult);
             var blockMockTyped = (CogToolBlockMock) blockMock;
-            var blockRunner = new BlockRunner(ResultMode.OK_NG);
+            var blockRunner = new BlockRunner(ResultMode.OK_NG_Error);
 
             blockRunner.RunToolBlock(blockMock);
 
@@ -23,16 +23,31 @@ namespace Lib_VP.Tests
             Assert.True(blockMockTyped.RunHasBeenCalled);
         }
 
-        [TestCase(CogToolResultConstants.Accept, false, RunResult.OK)]
-        [TestCase(CogToolResultConstants.Error, true, RunResult.ProductMissing)]
-        [TestCase(CogToolResultConstants.Error, false, RunResult.NG)]
-        [TestCase(CogToolResultConstants.Reject, false, RunResult.NG)]
-        public void RunToolBlock_3PossibleResults(CogToolResultConstants blockResult, bool productIsMissing,
+        [TestCase(CogToolResultConstants.Accept, RunResult.OK)]
+        [TestCase(CogToolResultConstants.Error, RunResult.Error)]
+        [TestCase(CogToolResultConstants.Reject, RunResult.NG)]
+        public void RunToolBlock_4PossibleResultsAndProductPresent(CogToolResultConstants blockResult,
             RunResult expectedRunResult)
         {
             var blockMock = BlockRunnerMockFactory.CreateCogToolMock(blockResult);
             var blockMockTyped = (CogToolBlockMock) blockMock;
-            var blockRunner = new BlockRunner(ResultMode.OK_NG_ProductMissing, tool => productIsMissing);
+            var blockRunner = new BlockRunner(ResultMode.OK_NG_ProductMissing_Error, tool => false);
+
+            blockRunner.RunToolBlock(blockMock);
+
+            Assert.True(blockRunner.LastRunResult == expectedRunResult);
+            Assert.True(blockMockTyped.RunHasBeenCalled);
+        }
+
+        [TestCase(CogToolResultConstants.Accept, RunResult.OK)]
+        [TestCase(CogToolResultConstants.Error, RunResult.ProductMissing)]
+        [TestCase(CogToolResultConstants.Reject, RunResult.ProductMissing)]
+        public void RunToolBlock_4PossibleResultsAndProductMissing(CogToolResultConstants blockResult,
+            RunResult expectedRunResult)
+        {
+            var blockMock = BlockRunnerMockFactory.CreateCogToolMock(blockResult);
+            var blockMockTyped = (CogToolBlockMock) blockMock;
+            var blockRunner = new BlockRunner(ResultMode.OK_NG_ProductMissing_Error, tool => true);
 
             blockRunner.RunToolBlock(blockMock);
 

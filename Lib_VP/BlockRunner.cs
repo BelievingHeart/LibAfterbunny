@@ -10,7 +10,7 @@ namespace Lib_VP
 {
     public class BlockRunner
     {
-        public BlockRunner(ResultMode resultMode = ResultMode.OK_NG_ProductMissing,
+        public BlockRunner(ResultMode resultMode = ResultMode.OK_NG_ProductMissing_Error,
             Func<ICogTool, bool> productMissingCondition = null)
         {
             _resultMode = resultMode;
@@ -54,14 +54,28 @@ namespace Lib_VP
             tool.Run();
             var cogRunResult = tool.RunStatus.Result;
 
-            LastRunResult = cogRunResult == CogToolResultConstants.Accept
-                ? RunResult.OK
-                : _resultMode == ResultMode.OK_NG_ProductMissing && _productMissingCondition(tool)
-                    ? RunResult.ProductMissing
-                    : RunResult.NG;
+            LastRunResult = GetLastRunResult(cogRunResult, tool);
 
             OnRan(tool);
             foreach (var logger in Loggers) logger.Log(tool, LastRunResult);
+        }
+
+        private RunResult GetLastRunResult(CogToolResultConstants cogRunResult, ICogTool tool)
+        {
+            if (_resultMode == ResultMode.OK_NG_Error)
+                switch (cogRunResult)
+                {
+                    case CogToolResultConstants.Accept:
+                        return RunResult.OK;
+                    case CogToolResultConstants.Error:
+                        return RunResult.Error;
+                    default:
+                        return RunResult.NG;
+                }
+
+            if (cogRunResult == CogToolResultConstants.Accept) return RunResult.OK;
+            if (_productMissingCondition(tool)) return RunResult.ProductMissing;
+            return cogRunResult == CogToolResultConstants.Error ? RunResult.Error : RunResult.NG;
         }
 
         #region Fields

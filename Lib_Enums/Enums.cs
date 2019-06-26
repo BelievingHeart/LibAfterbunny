@@ -19,13 +19,14 @@ namespace Lib_Enums
     {
         OK = 1,
         NG = 2,
-        ProductMissing = 4
+        ProductMissing = 4,
+        Error = 8
     }
 
     public enum ResultMode
     {
-        OK_NG,
-        OK_NG_ProductMissing
+        OK_NG_Error,
+        OK_NG_ProductMissing_Error
     }
 
     public enum FileOrDirectory
