@@ -2,7 +2,7 @@ using System;
 using Cognex.VisionPro;
 using Lib_Enums;
 
-namespace Lib_Logger
+namespace Lib_VP
 {
     public interface IToolBlockLogger
     {

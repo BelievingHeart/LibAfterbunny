@@ -66,6 +66,7 @@
     <ItemGroup>
         <Compile Include="BlockRunnerTests.cs"/>
         <Compile Include="CogToolBlockMock.cs"/>
+        <Compile Include="DataGridTests.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>

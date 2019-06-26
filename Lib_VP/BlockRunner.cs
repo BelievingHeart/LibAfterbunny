@@ -4,7 +4,6 @@ using Cognex.VisionPro;
 using Cognex.VisionPro.PMAlign;
 using Cognex.VisionPro.ToolBlock;
 using Lib_Enums;
-using Lib_Logger;
 
 namespace Lib_VP
 {

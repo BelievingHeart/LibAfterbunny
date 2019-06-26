@@ -38,6 +38,18 @@
         <Reference Include="Cognex.VisionPro, Version=59.2.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>C:\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.dll</HintPath>
         </Reference>
+        <Reference Include="Cognex.VisionPro.Controls, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
+            <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.Controls.dll</HintPath>
+        </Reference>
+        <Reference Include="Cognex.VisionPro.Core, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
+            <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Cognex.VisionPro.Display.Controls, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
+            <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.Display.Controls.dll</HintPath>
+        </Reference>
+        <Reference Include="Cognex.VisionPro.ImageFile, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
+            <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.ImageFile.dll</HintPath>
+        </Reference>
         <Reference Include="Cognex.VisionPro.PMAlign, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.PMAlign.dll</HintPath>
         </Reference>
@@ -53,11 +65,17 @@
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
+        <Reference Include="System.Drawing"/>
+        <Reference Include="System.Windows.Forms"/>
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="BlockRunner.cs"/>
+        <Compile Include="Logger\IToolBlockLogger.cs"/>
+        <Compile Include="Logger\TooblockDataLogger.cs"/>
+        <Compile Include="Logger\ToolBlockImageLogger.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="Rectifier\DataGrid.cs"/>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Lib_Enums\Lib_Enums.csproj">
@@ -67,6 +85,10 @@
         <ProjectReference Include="..\Lib_Logger\Lib_Logger.csproj">
             <Project>{8249a032-7250-44e6-b6cf-fa3e6a0be805}</Project>
             <Name>Lib_Logger</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\Utils\Utils.csproj">
+            <Project>{7770143a-fa0d-406b-9c37-97561e3cec3b}</Project>
+            <Name>Utils</Name>
         </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

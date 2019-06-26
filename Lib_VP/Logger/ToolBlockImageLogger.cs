@@ -8,7 +8,7 @@ using Cognex.VisionPro.ToolBlock;
 using Lib_Enums;
 using Utils;
 
-namespace Lib_Logger
+namespace Lib_VP.Logger
 {
     /// <summary>
     ///     This class takes care of how CogDisplay is refreshed and saved

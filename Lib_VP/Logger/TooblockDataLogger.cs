@@ -7,7 +7,7 @@ using Cognex.VisionPro.ToolBlock;
 using Lib_Enums;
 using Utils;
 
-namespace Lib_Logger
+namespace Lib_VP.Logger
 {
     public class ToolBlockDataLogger : IToolBlockLogger
     {
@@ -31,8 +31,8 @@ namespace Lib_Logger
             }
 
             var outputValues = ExtractOutputValuesFromBlock(toolBlock);
-            var line = runResult == RunResult.OK ? FormatOutputValues(outputValues) :
-                runResult == RunResult.NG ? "NG" : "Null";
+            var line = runResult == RunResult.OK || runResult == RunResult.NG ? FormatOutputValues(outputValues) :
+                runResult == RunResult.ProductMissing ? "Null" : "Error";
 
             _logFile = WriteLine(line);
 
