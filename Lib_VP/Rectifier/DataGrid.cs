@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Lib_VP.Rectifier
 {
@@ -49,6 +50,15 @@ namespace Lib_VP.Rectifier
                     "Newly added values should have the same length as columns of DataGrid");
 
             for (var i = 0; i < list.Count; i++) _dataColumns[i].Enqueue(list[i]);
+        }
+
+        public IEnumerable<DataColumn> GetColumnsFromRegex(string pattern)
+        {
+            var regex = new Regex(pattern);
+
+            if (_dataColumns.All(column => !regex.IsMatch(column.Name)))
+                throw new KeyNotFoundException($"No item in _dataColumn is matched with pattern: {pattern}");
+            return _dataColumns.Where(column => regex.IsMatch(column.Name));
         }
 
         #region Fields

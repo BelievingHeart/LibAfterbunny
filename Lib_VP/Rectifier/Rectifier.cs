@@ -51,9 +51,9 @@ namespace Lib_VP.Rectifier
             // Init nameMaps
             for (var i = 0; i < millimeterNames.Count; i++)
             {
-                _allNameMaps.Add(new NameMap {Milimeter = millimeterNames[i], Pixel = pixelNames[i]});
+                _allNameMaps.Add(new NameMap {Millmeter = millimeterNames[i], Pixel = pixelNames[i]});
                 if (!pixelNames[i].Contains(nonstandardSuffix))
-                    _nameMapsStandardOnly.Add(new NameMap {Milimeter = millimeterNames[i], Pixel = pixelNames[i]});
+                    _nameMapsStandardOnly.Add(new NameMap {Millmeter = millimeterNames[i], Pixel = pixelNames[i]});
             }
 
             // Init angleNames
@@ -96,7 +96,7 @@ namespace Lib_VP.Rectifier
 
     internal class NameMap
     {
-        public string Milimeter { get; set; }
+        public string Millmeter { get; set; }
         public string Pixel { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Lib_VP.Rectifier;
 using NUnit.Framework;
 
@@ -11,7 +12,7 @@ namespace Lib_VP.Tests
     {
         private DataGrid CreateDataGrid(bool rowFixed, int maxRows)
         {
-            return new DataGrid(new List<string> {"Hello", "World"}, rowFixed, maxRows);
+            return new DataGrid(new List<string> {"X1", "World"}, rowFixed, maxRows);
         }
 
         [Test]
@@ -59,6 +60,30 @@ namespace Lib_VP.Tests
             Assert.Catch<DuplicateNameException>(() =>
             {
                 var dataGrid = new DataGrid(new List<string> {"hello", "hello"});
+            });
+        }
+
+        [Test]
+        public void GetColumnsFromRegex_WhenRegexMatched_ReturnACollectionOfDataColumns()
+        {
+            var dataGrid = CreateDataGrid(false, 2);
+
+            var dataColumns = dataGrid.GetColumnsFromRegex(@"[a-z,A-Z]+\d");
+            var columnList = dataColumns.ToList();
+
+            Assert.AreEqual(columnList.Count, 1);
+            var name = columnList[0].Name;
+            Assert.AreEqual(name, "X1");
+        }
+
+        [Test]
+        public void GetColumnsFromRegex_WhenRegexNotMatched_KeyNotFoundExceptionThrown()
+        {
+            var dataGrid = CreateDataGrid(false, 2);
+
+            Assert.Catch<KeyNotFoundException>(() =>
+            {
+                var dataColumns = dataGrid.GetColumnsFromRegex(@"[a-z,A-Z]+\d{2}");
             });
         }
 
