@@ -6,9 +6,16 @@ namespace Lib_IO
 {
     public class CommunicatorAdaptor
     {
-        private ICommunicator _communicator;
-        private AutoResetEvent _cond = new AutoResetEvent(false);
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly ICommunicator _communicator;
+        private readonly AutoResetEvent _cond = new AutoResetEvent(false);
+
+        public CommunicatorAdaptor(ICommunicator communicator)
+        {
+            _communicator = communicator;
+            _communicator.Triggered += (sender, args) => _cond.Set();
+        }
+
         public event EventHandler TriggerReceived;
 
         protected virtual void OnTriggerReceived()
@@ -28,15 +35,10 @@ namespace Lib_IO
         public void StartListening()
         {
             _communicator.StartListening();
-            Task.Factory.StartNew(ExecutionLoops, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(ExecutionLoops, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
         }
 
-        public CommunicatorAdaptor(ICommunicator communicator)
-        {
-            _communicator = communicator;
-            _communicator.Triggered += (sender, args) => _cond.Set();
-        }
-        
         public void EndListening()
         {
             _cancellationTokenSource.Cancel();
