@@ -7,11 +7,25 @@ using Cognex.VisionPro;
 
 namespace Lib_VP.Rectifier
 {
+    /// <summary>
+    /// To use Rectifier, the outputs and inputs of the CogToolBlock must be named properly
+    /// Naming Rules by examples:
+    /// For outputs that are measured by millimeter:
+    ///     X, Y1, Z_WeightedByX
+    /// For outputs that are measured by pixel:
+    ///     X_pixel, Y1_pixel, Z_WeightedByX_pixel
+    /// For outputs that are measured by angle:
+    ///     Angle1, Angle1_Pixel(A fake output using the same value of Angle1)
+    /// For inputs:
+    ///     Weight_X, Bias_X
+    ///     Weight_Y1, Bias_Y1
+    ///     Weight_Z_WeightedByX, Bias_Z_WeightedByX
+    ///     Weight_Angle1, Bias_Angle1
+    /// </summary>
     public class Rectifier
     {
         /// <summary>
         /// </summary>
-        /// <param name="dataGrid"></param>
         /// <param name="standardFile"></param>
         /// <param name="pixelPattern">
         ///     Values that represent distances measured by pixel should end with "_pixel"
@@ -25,16 +39,43 @@ namespace Lib_VP.Rectifier
         ///     Naming convention:
         ///     1. Value names in mm have no suffix
         /// </param>
-        public Rectifier(DataGrid dataGrid, string standardFile, string pixelPattern = @"_pixel",
-            string nonstandardPattern = @"_weightedBy")
+        public Rectifier(string standardFile, string pixelPattern = @"_Pixel",
+            string nonstandardPattern = @"_WeightedBy")
         {
-            _dataGrid = dataGrid;
             _standardFile = standardFile;
             _pixelPattern = pixelPattern;
             _nonstandardPattern = nonstandardPattern;
-            ExtractMillimeterPixelPairsFromDataGrid();
-            ExtractWeightCalculationUnits();
         }
+        
+        public void Rectify(ICogTool toolBlock)
+        {
+            if(_dataGrid == null) throw new InvalidOperationException("Rectify can not be called until DataGrid is initialized.");
+            if (!_dataGrid.EnoughDataCollected)
+                throw new InvalidOperationException(
+                    $"At least {_dataGrid.MaxRows} lines of data should be collected before calling Rectify");
+            var OMM_Data = ParseOMMCSV();
+            AssociateWithRectificationEntities(OMM_Data);
+            _weightCalculationUnits.CalculateWeights();
+            EstimateMillimeterDistances(); // for each RectificationEntity, estimate biased millimeter distances
+            EditBlockInputs(toolBlock);
+        }
+
+
+        #region Properties
+
+        public DataGrid DataGrid
+        {
+            get => _dataGrid;
+            set
+            {
+                _dataGrid = value;
+                OnDataGridSet();
+            }
+        }
+
+        #endregion
+
+        #region Implementations
 
         private void ExtractWeightCalculationUnits()
         {
@@ -88,17 +129,7 @@ namespace Lib_VP.Rectifier
             return pixelColumnName.Substring(0, pixelColumnName.IndexOf(_pixelPattern, StringComparison.Ordinal) + 1);
         }
 
-        public void Rectify(ICogTool toolBlock)
-        {
-            if (!_dataGrid.EnoughDataCollected)
-                throw new InvalidOperationException(
-                    $"At least {_dataGrid.MaxRows} lines of data should be collected before calling Rectify");
-            var OMM_Data = ParseOMMCSV();
-            AssociateWithRectificationEntities(OMM_Data);
-            _weightCalculationUnits.CalculateWeights();
-            EstimateMillimeterDistances(); // for each RectificationEntity, estimate biased millimeter distances
-            EditBlockInputs(toolBlock);
-        }
+
 
         private void EditBlockInputs(ICogTool toolBlock)
         {
@@ -129,6 +160,12 @@ namespace Lib_VP.Rectifier
                 }
         }
 
+        private void OnDataGridSet()
+        {
+            ExtractMillimeterPixelPairsFromDataGrid();
+            ExtractWeightCalculationUnits();
+        }
+
         private List<DataColumn> ParseOMMCSV()
         {
             var output = new List<DataColumn>();
@@ -149,20 +186,16 @@ namespace Lib_VP.Rectifier
             return output;
         }
 
-
+        #endregion
+        
         #region Fields
 
-        private readonly DataGrid _dataGrid;
+        private DataGrid _dataGrid;
         private readonly string _standardFile;
         private readonly string _pixelPattern;
         private readonly string _nonstandardPattern;
         private List<RectificationEntity> _rectificationEntities;
         private WeightCalculationUnits _weightCalculationUnits;
-
-        #endregion
-
-
-        #region Properties
 
         #endregion
     }
