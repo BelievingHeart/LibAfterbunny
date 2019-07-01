@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -7,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Lib_VP.Rectifier
 {
-    public class DataGrid
+    public class DataGrid : IEnumerable<DataColumn>
     {
         public DataGrid(IEnumerable<string> dataColumnNames, bool rowsFixed = false, int maxRows = int.MaxValue)
         {
@@ -40,6 +41,16 @@ namespace Lib_VP.Rectifier
                     break;
                 }
             }
+        }
+
+        public IEnumerator<DataColumn> GetEnumerator()
+        {
+            return _dataColumns.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public void AddRow(IEnumerable<double> newRow)
@@ -112,6 +123,8 @@ namespace Lib_VP.Rectifier
                 return _dataColumns.All(ele => ele.Rows == heightOfFirstCol);
             }
         }
+
+        public bool EnoughDataCollected => RowsFixed && Rows == MaxRows;
 
         #endregion
     }

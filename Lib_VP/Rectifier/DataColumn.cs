@@ -73,6 +73,16 @@ namespace Lib_VP.Rectifier
             return _data.Select(num => num + adder);
         }
 
+        public IEnumerable<double> Subtract(IEnumerable<double> toBeSubtracted)
+        {
+            return _data.Zip(toBeSubtracted, (arg1, arg2) => arg1 - arg2);
+        }
+
+        public IEnumerable<double> Subtract(double toBeSubtracted)
+        {
+            return _data.Select(num => num - toBeSubtracted);
+        }
+
         #region Properties
 
         public string Name { set; get; }
