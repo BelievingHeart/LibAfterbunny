@@ -88,18 +88,18 @@ namespace Lib_VP.Tests
         }
 
         [Test]
-        public void Indexer_WhenKeyExists_ReturnTheRightEntry()
+        public void IndexerGet_WhenKeyExists_ReturnTheRightEntry()
         {
             var dataGrid = CreateDataGrid(false, 2);
             dataGrid.AddRow(new List<double> {1, 2});
             dataGrid.AddRow(new List<double> {3, 4});
 
-            var col = dataGrid["World"];
+            var col = dataGrid["World"].ToList();
             Assert.AreEqual(col[1], 4);
         }
 
         [Test]
-        public void Indexer_WhenKeyNotExist_KeyNotFoundExceptionThrown()
+        public void IndexerGet_WhenKeyNotExist_KeyNotFoundExceptionThrown()
         {
             var dataGrid = CreateDataGrid(false, 2);
             dataGrid.AddRow(new List<double> {1, 2});
@@ -108,6 +108,26 @@ namespace Lib_VP.Tests
             {
                 var col = dataGrid["world"];
             });
+        }
+
+        [Test]
+        public void IndexerSet_WhenKeyExist_DataOfCorrespondingColumnGetReplaced()
+        {
+            var dataGrid = CreateDataGrid(false, 2);
+
+            dataGrid["World"] = new List<double> {1, 1, 1, 1};
+
+            Assert.AreEqual(4, dataGrid["World"].ToList().Count);
+        }
+
+        [Test]
+        public void IndexerSet_WhenKeyNotExist_AddNewOne()
+        {
+            var dataGrid = CreateDataGrid(false, 2);
+
+            dataGrid["world"] = new List<double>();
+
+            Assert.AreEqual(3, dataGrid.Cols);
         }
     }
 }

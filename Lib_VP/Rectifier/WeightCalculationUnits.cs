@@ -6,6 +6,20 @@ namespace Lib_VP.Rectifier
 {
     public class WeightCalculationUnits
     {
+        #region Properties
+
+        public int Count
+        {
+            get
+            {
+                if (_units.Count != _unitNames.Count)
+                    throw new InvalidOperationException("Count of units and count of unitNames must be equal");
+                return _units.Count;
+            }
+        }
+
+        #endregion
+
         #region Fields
 
         private readonly HashSet<string> _unitNames = new HashSet<string>();

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Cognex.VisionPro;
@@ -8,15 +7,15 @@ using Cognex.VisionPro;
 namespace Lib_VP.Rectifier
 {
     /// <summary>
-    /// To use Rectifier, the outputs and inputs of the CogToolBlock must be named properly
-    /// Naming Rules by examples:
-    /// For outputs that are measured by millimeter:
+    ///     To use Rectifier, the outputs and inputs of the CogToolBlock must be named properly
+    ///     Naming Rules by examples:
+    ///     For outputs that are measured by millimeter:
     ///     X, Y1, Z_WeightedByX
-    /// For outputs that are measured by pixel:
+    ///     For outputs that are measured by pixel:
     ///     X_pixel, Y1_pixel, Z_WeightedByX_pixel
-    /// For outputs that are measured by angle:
+    ///     For outputs that are measured by angle:
     ///     Angle1, Angle1_Pixel(A fake output using the same value of Angle1)
-    /// For inputs:
+    ///     For inputs:
     ///     Weight_X, Bias_X
     ///     Weight_Y1, Bias_Y1
     ///     Weight_Z_WeightedByX, Bias_Z_WeightedByX
@@ -26,38 +25,24 @@ namespace Lib_VP.Rectifier
     {
         /// <summary>
         /// </summary>
-        /// <param name="standardFile"></param>
         /// <param name="pixelPattern">
-        ///     Values that represent distances measured by pixel should end with "_pixel"
-        ///     Examples: X1_pixel, Y1_weightedByXStar_pixel
+        ///     Values that represent distances measured by pixel should end with "_Pixel"
+        ///     Examples: X1_pixel, Y1_WeightedByX_Pixel
         /// </param>
         /// <param name="nonstandardPattern">
-        ///     Values that are not used to calculate weights should have names with "_weightedBy" after their counterpart
-        ///     Examples: Y1_weightedByX, Y_weightedByXStar_pixel
+        ///     Values that are not used to calculate weights should have names with "_WeightedBy" after their counterpart
+        ///     Examples: Y1_WeightedByX, Y_WeightedByX_Pixel
         /// </param>
         /// <param name="columnNames">
         ///     Naming convention:
         ///     1. Value names in mm have no suffix
         /// </param>
-        public Rectifier(string standardFile, string pixelPattern = @"_Pixel",
+        public Rectifier(IOMMDataParser dataParser, string pixelPattern = @"_Pixel",
             string nonstandardPattern = @"_WeightedBy")
         {
-            _standardFile = standardFile;
+            _dataParser = dataParser;
             _pixelPattern = pixelPattern;
             _nonstandardPattern = nonstandardPattern;
-        }
-        
-        public void Rectify(ICogTool toolBlock)
-        {
-            if(_dataGrid == null) throw new InvalidOperationException("Rectify can not be called until DataGrid is initialized.");
-            if (!_dataGrid.EnoughDataCollected)
-                throw new InvalidOperationException(
-                    $"At least {_dataGrid.MaxRows} lines of data should be collected before calling Rectify");
-            var OMM_Data = ParseOMMCSV();
-            AssociateWithRectificationEntities(OMM_Data);
-            _weightCalculationUnits.CalculateWeights();
-            EstimateMillimeterDistances(); // for each RectificationEntity, estimate biased millimeter distances
-            EditBlockInputs(toolBlock);
         }
 
 
@@ -74,6 +59,20 @@ namespace Lib_VP.Rectifier
         }
 
         #endregion
+
+        public void Rectify(ICogTool toolBlock)
+        {
+            if (_dataGrid == null)
+                throw new InvalidOperationException("Rectify can not be called until DataGrid is initialized.");
+            if (!_dataGrid.EnoughDataCollected)
+                throw new InvalidOperationException(
+                    $"At least {_dataGrid.MaxRows} lines of data should be collected before calling Rectify");
+            var OMM_Data = ParseOMMCSV();
+            AssociateWithRectificationEntities(OMM_Data);
+            _weightCalculationUnits.CalculateWeights();
+            EstimateMillimeterDistances(); // for each RectificationEntity, estimate biased millimeter distances
+            EditBlockInputs(toolBlock);
+        }
 
         #region Implementations
 
@@ -95,7 +94,7 @@ namespace Lib_VP.Rectifier
 
         private string GetRectificationSourceName(string name)
         {
-            var regex = new Regex($"{_nonstandardPattern}(\\w+)_");
+            var regex = new Regex($"{_nonstandardPattern}(\\w+)");
             var matchResult = regex.Match(name);
             return matchResult.Groups[1].Value;
         }
@@ -105,9 +104,10 @@ namespace Lib_VP.Rectifier
         {
             var pixelColumns = _dataGrid.GetColumnsFromRegex(_pixelPattern);
             var millimeterColumns = GetCorrespondingMillimeterColumns(pixelColumns);
-            _rectificationEntities = (List<RectificationEntity>) pixelColumns.Zip(millimeterColumns,
+            _rectificationEntities = pixelColumns.Zip(millimeterColumns,
                 (pixelColumn, millimeterColumn) =>
-                    new RectificationEntity(millimeterColumn.Name, millimeterColumn, pixelColumn));
+                    new RectificationEntity(millimeterColumn.Name)
+                        {PixelColumn = pixelColumn, MillimeterColumn = millimeterColumn}).ToList();
         }
 
         private List<DataColumn> GetCorrespondingMillimeterColumns(IEnumerable<DataColumn> pixelColumns)
@@ -121,14 +121,13 @@ namespace Lib_VP.Rectifier
         private DataColumn GetCorrespondingMillimeterColumn(DataColumn pixelColumn)
         {
             var millimeterNameExpected = RemovePixelSuffix(pixelColumn.Name);
-            return _dataGrid[millimeterNameExpected];
+            return new DataColumn(millimeterNameExpected, _dataGrid[millimeterNameExpected]);
         }
 
         private string RemovePixelSuffix(string pixelColumnName)
         {
-            return pixelColumnName.Substring(0, pixelColumnName.IndexOf(_pixelPattern, StringComparison.Ordinal) + 1);
+            return pixelColumnName.Substring(0, pixelColumnName.IndexOf(_pixelPattern, StringComparison.Ordinal));
         }
-
 
 
         private void EditBlockInputs(ICogTool toolBlock)
@@ -168,34 +167,19 @@ namespace Lib_VP.Rectifier
 
         private List<DataColumn> ParseOMMCSV()
         {
-            var output = new List<DataColumn>();
-            var lines = File.ReadAllLines(_standardFile);
-            var firstLine = lines[0];
-            var names = firstLine.Split(',');
-            var itemsCount = names.Length;
-            var lastNumLines = lines.Reverse().Take(_dataGrid.MaxRows).Reverse();
-
-            for (var i = 0; i < itemsCount - 1; i++) output.Add(new DataColumn(names[i + 1]));
-
-            foreach (var line in lastNumLines)
-            {
-                var values = line.Split(',');
-                for (var i = 0; i < itemsCount - 1; i++) output[i].Enqueue(double.Parse(values[i + 1]));
-            }
-
-            return output;
+            return _dataParser.Parse(_dataGrid.MaxRows);
         }
 
         #endregion
-        
+
         #region Fields
 
         private DataGrid _dataGrid;
-        private readonly string _standardFile;
+        private readonly IOMMDataParser _dataParser;
         private readonly string _pixelPattern;
         private readonly string _nonstandardPattern;
         private List<RectificationEntity> _rectificationEntities;
-        private WeightCalculationUnits _weightCalculationUnits;
+        private readonly WeightCalculationUnits _weightCalculationUnits = new WeightCalculationUnits();
 
         #endregion
     }

@@ -23,7 +23,7 @@ namespace Lib_VP.Rectifier
             MaxRows = maxRows;
         }
 
-        public DataColumn this[string key]
+        public IEnumerable<double> this[string key]
         {
             get
             {
@@ -34,12 +34,14 @@ namespace Lib_VP.Rectifier
             }
             set
             {
-                for (var index = 0; index < _dataColumns.Count; index++)
-                {
-                    if (_dataColumns[index].Name != key) continue;
-                    _dataColumns[index] = value;
-                    break;
-                }
+                for (var i = 0; i < _dataColumns.Count; i++)
+                    if (_dataColumns[i].Name == key)
+                    {
+                        _dataColumns[i] = new DataColumn(key, value);
+                        return;
+                    }
+
+                _dataColumns.Add(new DataColumn(key, value));
             }
         }
 

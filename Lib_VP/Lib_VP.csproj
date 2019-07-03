@@ -34,33 +34,35 @@
     <ItemGroup>
         <Reference Include="Cognex.VisionPro, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.dll</HintPath>
-        </Reference>
-        <Reference Include="Cognex.VisionPro, Version=59.2.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
-            <HintPath>C:\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Cognex.VisionPro.Controls, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.Controls.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Cognex.VisionPro.Core, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.Core.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Cognex.VisionPro.Display.Controls, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.Display.Controls.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Cognex.VisionPro.ImageFile, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.ImageFile.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Cognex.VisionPro.ImageProcessing, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
+            <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.ImageProcessing.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Cognex.VisionPro.PMAlign, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.PMAlign.dll</HintPath>
-        </Reference>
-        <Reference Include="Cognex.VisionPro.PMAlign, Version=59.2.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
-            <HintPath>C:\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.PMAlign.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Cognex.VisionPro.ToolGroup, Version=55.0.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
             <HintPath>..\..\..\..\..\..\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.ToolGroup.dll</HintPath>
-        </Reference>
-        <Reference Include="Cognex.VisionPro.ToolGroup, Version=59.2.0.0, Culture=neutral, PublicKeyToken=ef0f902af9dee505">
-            <HintPath>C:\Program Files\Cognex\VisionPro\ReferencedAssemblies\Cognex.VisionPro.ToolGroup.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
@@ -77,6 +79,8 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Rectifier\DataColumn.cs"/>
         <Compile Include="Rectifier\DataGrid.cs"/>
+        <Compile Include="Rectifier\IOMMDataParser.cs"/>
+        <Compile Include="Rectifier\OMMDataParser.cs"/>
         <Compile Include="Rectifier\RectificationEntity.cs"/>
         <Compile Include="Rectifier\Rectifier.cs"/>
         <Compile Include="Rectifier\WeightCalculationUnit.cs"/>

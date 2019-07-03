@@ -6,43 +6,51 @@ namespace Lib_VP.Rectifier
 {
     public class WeightCalculationUnit
     {
+        #region APIs
+
         public WeightCalculationUnit(string name)
         {
             Name = name;
         }
 
-        public void AddWeightCalculationEntity(RectificationEntity pair)
+        public void AddWeightCalculationEntity(RectificationEntity entity)
         {
-            if (PairDuplicates(pair)) return;
-            _entitiesForWeightCalculation.Add(pair);
+            if (WeightCalculationEntityDuplicates(entity)) return;
+            _entitiesForWeightCalculation.Add(entity);
         }
 
         public void Calculate()
         {
-            _weight = _entitiesForWeightCalculation.Average(pair => pair.CalculateWeight());
-            UpdateWeights(_weight);
-            _calculated = true;
+            if (_entitiesForWeightCalculation == null)
+                throw new InvalidOperationException(
+                    "AddWeightCalculationEntity should be called before calling Calcuate");
+            Weight = _entitiesForWeightCalculation.Average(pair => pair.CalculateWeight());
+            UpdateWeights(Weight);
         }
+
+        public void AddToWeightToBeUpdatedList(RectificationEntity entity)
+        {
+            _entitiesWhoseWeightWillBeUpdated.Add(entity);
+        }
+
+        #endregion
+
+        #region Implementations
 
         private void UpdateWeights(double weight)
         {
             foreach (var entity in _entitiesWhoseWeightWillBeUpdated) entity.Weight = weight;
         }
 
-        private bool PairDuplicates(RectificationEntity pair)
+        private bool WeightCalculationEntityDuplicates(RectificationEntity pair)
         {
             return _entitiesForWeightCalculation.Any(ele => ele.Name == pair.Name);
         }
 
-        public void AddToWeightToBeUpdatedList(RectificationEntity nonStandardEntity)
-        {
-            _entitiesWhoseWeightWillBeUpdated.Add(nonStandardEntity);
-        }
+        #endregion
 
         #region Fields
 
-        private double _weight;
-        private bool _calculated;
         public readonly string Name;
         private readonly List<RectificationEntity> _entitiesForWeightCalculation = new List<RectificationEntity>();
         private readonly List<RectificationEntity> _entitiesWhoseWeightWillBeUpdated = new List<RectificationEntity>();
@@ -51,17 +59,10 @@ namespace Lib_VP.Rectifier
 
         #region Properties
 
-        public int Count => _entitiesForWeightCalculation.Count;
+        public int Count4WeightCalculationEntities => _entitiesForWeightCalculation.Count;
+        public int Count4WeightUpdatingEntities => _entitiesWhoseWeightWillBeUpdated.Count;
 
-        public double Weight
-        {
-            get
-            {
-                if (!_calculated)
-                    throw new InvalidOperationException("Weight can not be accessed until Calculate is called");
-                return _weight;
-            }
-        }
+        public double Weight { get; private set; }
 
         #endregion
     }

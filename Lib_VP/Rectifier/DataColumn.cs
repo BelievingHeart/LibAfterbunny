@@ -8,18 +8,14 @@ namespace Lib_VP.Rectifier
     {
         #region Fields
 
-        private readonly Queue<double> _data;
+        private readonly Queue<double> _data = new Queue<double>();
 
         #endregion
 
         public DataColumn(string name, IEnumerable<double> data = null)
         {
             Name = name;
-            if (data == null)
-            {
-                _data = new Queue<double>();
-                return;
-            }
+            if (data == null) return;
 
             foreach (var d in data) _data.Enqueue(d);
         }

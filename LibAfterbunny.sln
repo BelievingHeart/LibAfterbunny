@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib_VP.Tests", "Lib_VP.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib_Enums", "Lib_Enums\Lib_Enums.csproj", "{6B77F1E6-9C0D-4008-9B5D-09FB4A0B0388}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib_VP.IntegrationTests", "Lib_VP.IntegrationTests\Lib_VP.IntegrationTests.csproj", "{D13FC103-CA6F-4A1B-994E-2A2AE0B4D3D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{6B77F1E6-9C0D-4008-9B5D-09FB4A0B0388}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B77F1E6-9C0D-4008-9B5D-09FB4A0B0388}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B77F1E6-9C0D-4008-9B5D-09FB4A0B0388}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D13FC103-CA6F-4A1B-994E-2A2AE0B4D3D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D13FC103-CA6F-4A1B-994E-2A2AE0B4D3D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D13FC103-CA6F-4A1B-994E-2A2AE0B4D3D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D13FC103-CA6F-4A1B-994E-2A2AE0B4D3D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
